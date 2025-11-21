@@ -19,3 +19,34 @@ def add_category(request):
 def category_list(request):
     categories = Category.objects.all()
     return render(request,"products/category_list.html",{'categories':categories})
+
+def add_product(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        category_id = request.POST.get("category")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        image = request.FILES.get("image")
+
+        category = Category.objects.get(id=category_id)
+
+        Product.objects.create(
+            name=name,
+            category=category,
+            price=price,
+            description=description,
+            image=image
+        )
+
+        return redirect("product_list")
+
+    categories = Category.objects.all()
+    return render(request, "products/add_product.html", {"categories": categories})
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, "products/product_list.html", {"products": products})
+
+def product_detail(request, pk):
+    product = Product.objects.get(id=pk)
+    return render(request, "products/product_detail.html", {"product": product})
